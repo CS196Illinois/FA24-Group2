@@ -24,9 +24,8 @@ app.config['UPLOAD_FOLDER'] = dir_path + '/static/uploads/'
 # Allowed file extensions (for security reasons)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Run OpenCV on a image, then return the annotated/blurred image
 def processImage(image):
     results = model(image)  # YOLOv8 inference
     result = results[0]
@@ -49,6 +48,7 @@ def processImage(image):
 
     return image
 
+# Run to check whether a request sent by the client is valid
 def validateRequest(request):
     if 'image' not in request.files:
         print("No image part in the request")
@@ -72,19 +72,22 @@ def validateRequest(request):
     
     return True
 
+# Home Page
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Run when file is uploaded
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    
+
     result = validateRequest(request)
     if not result:
         return redirect(request.url)
 
     file = request.files['image']
     
+    # Format image to be used, without locally saving
     img_stream = file.stream.read()
     img_array = np.frombuffer(img_stream, np.uint8)
     img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
