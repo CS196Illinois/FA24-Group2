@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "Video Frame Processor",
+    "description": "Overlay processed frames onto YouTube videos.",
+    "version": "1.0",
+    "permissions": [
+      "activeTab",
+      "storage",
+      "scripting"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://www.youtube.com/watch*"],
+        "js": ["content.js"]
+      }
+    ],
+    "host_permissions": [
+      "http://localhost:5000/*",
+      "https://www.youtube.com/watch*"
+    ]
+  }
+  
